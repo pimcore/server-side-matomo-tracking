@@ -1,0 +1,3 @@
+server_side_matomo_tracking_homepage:
+    path:     /
+    defaults: { _controller: ServerSideMatomoTrackingBundle:Default:index }

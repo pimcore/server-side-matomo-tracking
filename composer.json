@@ -1,0 +1,21 @@
+{
+  "name": "pimcore/server-side-matomo-tracking",
+  "license": "GPL-3.0-or-later",
+  "type": "pimcore-bundle",
+  "require": {
+    "pimcore/core-version": "~5.2.0",
+    "piwik/piwik-php-tracker": "~1.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pimcore\\Bundle\\ServerSideMatomoTrackingBundle\\": "src"
+    }
+  },
+  "extra": {
+    "pimcore": {
+      "bundles": [
+        "Pimcore\\Bundle\\ServerSideMatomoTrackingBundle\\ServerSideMatomoTrackingBundle"
+      ]
+    }
+  }
+}

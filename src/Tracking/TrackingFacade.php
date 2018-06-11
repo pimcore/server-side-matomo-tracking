@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * Pimcore
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) Pimcore GmbH (http://www.pimcore.org)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ */
+
+namespace Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking;
+
+use Pimcore\Http\Request\Resolver\SiteResolver;
+use Symfony\Component\HttpFoundation\Request;
+
+class TrackingFacade implements TrackingFacadeInterface
+{
+    /**
+     * @var SiteResolver
+     */
+    protected $siteResolver;
+
+    /**
+     * @var Tracker[][]
+     */
+    protected $trackerCache;
+
+    /**
+     * @var Tracker[]
+     */
+    protected $allTrackers;
+
+    /**
+     * @var mixed
+     */
+    protected $currentSiteId = 'default';
+
+    public function __construct(SiteResolver $siteResolver)
+    {
+        $this->siteResolver = $siteResolver;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return TrackingFacadeInterface
+     */
+    public function updateSite(Request $request): TrackingFacadeInterface
+    {
+        $pimcoreSite = $this->siteResolver->getSite($request);
+        $this->currentSiteId = $pimcoreSite ? $pimcoreSite->getId() : 'default';
+
+        return $this;
+    }
+
+    /**
+     * @return Tracker[]
+     */
+    public function getCurrentTrackers(): array
+    {
+        if (!$this->trackerCache[$this->currentSiteId]) {
+            $currentSiteTrackers = [];
+            foreach ($this->allTrackers as $tracker) {
+                if ($tracker->getPimcoreSiteId() == $this->currentSiteId) {
+                    $currentSiteTrackers[] = $tracker;
+                }
+            }
+            $this->trackerCache[$this->currentSiteId] = $currentSiteTrackers;
+        }
+
+        return $this->trackerCache[$this->currentSiteId] ? $this->trackerCache[$this->currentSiteId] : [];
+    }
+
+    /**
+     * @return TrackingFacadeInterface
+     *
+     * @throws \Exception
+     */
+    public function doBulkTrackForAllTrackers(): TrackingFacadeInterface
+    {
+        foreach ($this->getCurrentTrackers() as $tracker) {
+            $tracker->doBulkTrack();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return TrackingFacadeInterface
+     */
+    public function doTrackPageViewForAllTrackers(Request $request): TrackingFacadeInterface
+    {
+        $pathPath = $request->getPathInfo();
+        foreach ($this->getCurrentTrackers() as $tracker) {
+            $tracker->doTrackPageView($pathPath);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Tracker $tracker
+     *
+     * @return TrackingFacadeInterface
+     */
+    public function addTracker(Tracker $tracker): TrackingFacadeInterface
+    {
+        $tracker->enableBulkTracking();
+
+        $this->allTrackers[] = $tracker;
+        $this->trackerCache = [];
+
+        return $this;
+    }
+}

@@ -1,0 +1,5 @@
+server_side_matomo_tracking:
+    resource: "@ServerSideMatomoTrackingBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
