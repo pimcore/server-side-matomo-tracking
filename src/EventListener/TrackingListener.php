@@ -20,6 +20,7 @@ use Pimcore\Bundle\CoreBundle\EventListener\Traits\ResponseInjectionTrait;
 use Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking\TrackingFacadeInterface;
 use Pimcore\Http\Request\Resolver\EditmodeResolver;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
+use Pimcore\Http\RequestHelper;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
@@ -39,10 +40,16 @@ class TrackingListener
      */
     protected $editmodeResolver;
 
-    public function __construct(TrackingFacadeInterface $trackingFacade, EditmodeResolver $editmodeResolver)
+    /**
+     * @var RequestHelper
+     */
+    protected $requestHelper;
+
+    public function __construct(TrackingFacadeInterface $trackingFacade, EditmodeResolver $editmodeResolver, RequestHelper $requestHelper)
     {
         $this->trackingFacade = $trackingFacade;
         $this->editmodeResolver = $editmodeResolver;
+        $this->requestHelper = $requestHelper;
     }
 
     /**
@@ -64,6 +71,10 @@ class TrackingListener
         }
 
         if($this->editmodeResolver->isEditmode($request)) {
+            return false;
+        }
+
+        if (!$this->requestHelper->isFrontendRequestByAdmin($request)) {
             return false;
         }
 
