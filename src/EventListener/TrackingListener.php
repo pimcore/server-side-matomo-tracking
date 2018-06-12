@@ -74,7 +74,7 @@ class TrackingListener
             return false;
         }
 
-        if (!$this->requestHelper->isFrontendRequestByAdmin($request)) {
+        if ($this->requestHelper->isFrontendRequestByAdmin($request)) {
             return false;
         }
 
