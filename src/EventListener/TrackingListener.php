@@ -16,7 +16,9 @@
 namespace Pimcore\Bundle\ServerSideMatomoTrackingBundle\EventListener;
 
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
+use Pimcore\Bundle\CoreBundle\EventListener\Traits\ResponseInjectionTrait;
 use Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking\TrackingFacadeInterface;
+use Pimcore\Http\Request\Resolver\EditmodeResolver;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
@@ -25,15 +27,22 @@ use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 class TrackingListener
 {
     use PimcoreContextAwareTrait;
+    use ResponseInjectionTrait;
 
     /**
      * @var TrackingFacadeInterface
      */
     protected $trackingFacade;
 
-    public function __construct(TrackingFacadeInterface $trackingFacade)
+    /**
+     * @var EditmodeResolver
+     */
+    protected $editmodeResolver;
+
+    public function __construct(TrackingFacadeInterface $trackingFacade, EditmodeResolver $editmodeResolver)
     {
         $this->trackingFacade = $trackingFacade;
+        $this->editmodeResolver = $editmodeResolver;
     }
 
     /**
@@ -54,6 +63,10 @@ class TrackingListener
             return false;
         }
 
+        if($this->editmodeResolver->isEditmode($request)) {
+            return false;
+        }
+
         // it's standard industry practice to exclude tracking if the request includes
         // the header 'X-Purpose:preview'
         if ($request->server->get('HTTP_X_PURPOSE') === 'preview') {
@@ -66,6 +79,10 @@ class TrackingListener
     public function onTerminate(PostResponseEvent $event)
     {
         if (!$this->checkIfApplicable($event)) {
+            return;
+        }
+
+        if(!$this->isHtmlResponse($event->getResponse())) {
             return;
         }
 
