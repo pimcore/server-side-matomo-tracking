@@ -21,6 +21,7 @@ use Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking\TrackingFacadeInterfa
 use Pimcore\Http\Request\Resolver\EditmodeResolver;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
 use Pimcore\Http\RequestHelper;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
@@ -87,13 +88,27 @@ class TrackingListener
         return true;
     }
 
-    public function onTerminate(PostResponseEvent $event)
-    {
-        if (!$this->checkIfApplicable($event)) {
-            return;
+    protected function checkIfApplicableResponse(PostResponseEvent $event) {
+        if(!$this->checkIfApplicable($event)) {
+            return false;
+        }
+
+        $response = $event->getResponse();
+
+        if($response instanceof RedirectResponse) {
+            return false;
         }
 
         if(!$this->isHtmlResponse($event->getResponse())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function onTerminate(PostResponseEvent $event)
+    {
+        if (!$this->checkIfApplicableResponse($event)) {
             return;
         }
 
