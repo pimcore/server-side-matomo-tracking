@@ -15,14 +15,22 @@
 
 namespace Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking;
 
+use Symfony\Component\HttpFoundation\RequestStack;
+
 class Tracker extends \PiwikTracker
 {
     protected $pimcoreSiteId = 'default';
 
-    public function __construct($idSite, $apiUrl = '', $pimcoreSiteId = 'default')
+    public function __construct($idSite, $apiUrl = '', $pimcoreSiteId = 'default', RequestStack $requestStack)
     {
         parent::__construct($idSite, $apiUrl);
         $this->pimcoreSiteId = $pimcoreSiteId;
+
+        //set a few values based on request data
+        $currentRequest = $requestStack->getMasterRequest();
+        $this->setIp($currentRequest->getClientIp());
+        $this->setBrowserLanguage($currentRequest->getPreferredLanguage());
+        $this->setUserAgent($currentRequest->headers->get('user-agent'));
     }
 
     public function getPimcoreSiteId()
