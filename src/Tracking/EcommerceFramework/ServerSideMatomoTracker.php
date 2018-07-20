@@ -59,7 +59,17 @@ class ServerSideMatomoTracker implements
      */
     private $handleCartRemove = true;
 
-    public function __construct(Tracker $tracker, ITrackingItemBuilder $trackingItemBuilder, array $options = [])
+    /**
+     * @var array
+     */
+    protected $assortmentTenants;
+
+    /**
+     * @var array
+     */
+    protected $checkoutTenants;
+
+    public function __construct(Tracker $tracker, ITrackingItemBuilder $trackingItemBuilder, array $options = [], $assortmentTenants = [], $checkoutTenants = [])
     {
         $this->tracker = $tracker;
         $this->trackingItemBuilder = $trackingItemBuilder;
@@ -67,6 +77,9 @@ class ServerSideMatomoTracker implements
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
         $this->processOptions($resolver->resolve($options));
+
+        $this->assortmentTenants = $assortmentTenants;
+        $this->checkoutTenants = $checkoutTenants;
     }
 
     protected function configureOptions(OptionsResolver $resolver)
@@ -217,5 +230,21 @@ class ServerSideMatomoTracker implements
         if (!empty($result)) {
             return $result;
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAssortmentTenants(): array
+    {
+        return $this->assortmentTenants;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCheckoutTenants(): array
+    {
+        return $this->checkoutTenants;
     }
 }
