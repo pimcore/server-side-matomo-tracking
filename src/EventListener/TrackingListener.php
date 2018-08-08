@@ -85,6 +85,10 @@ class TrackingListener
             return false;
         }
 
+        if ($request->server->get('HTTP_PURPOSE') === 'preview') {
+            return false;
+        }
+
         return true;
     }
 
