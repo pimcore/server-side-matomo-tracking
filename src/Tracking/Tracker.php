@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class Tracker extends \PiwikTracker
 {
     protected $pimcoreSiteId = 'default';
+    protected $requestUserAgent = '';
+    protected $requestLanguage = '';
 
     public function __construct($idSite, $apiUrl = '', $pimcoreSiteId = 'default', RequestStack $requestStack)
     {
@@ -29,8 +31,8 @@ class Tracker extends \PiwikTracker
         //set a few values based on request data
         $currentRequest = $requestStack->getMasterRequest();
         $this->setIp($currentRequest->getClientIp());
-        $this->setBrowserLanguage($currentRequest->getPreferredLanguage());
-        $this->setUserAgent($currentRequest->headers->get('user-agent'));
+        $this->requestLanguage = $currentRequest->getPreferredLanguage();
+        $this->requestUserAgent = $currentRequest->headers->get('user-agent');
     }
 
     public function getPimcoreSiteId()
@@ -50,5 +52,18 @@ class Tracker extends \PiwikTracker
         );
 
         return '_pct_' . $cookieName . '.' . $this->idSite . '.' . $hash;
+    }
+
+    protected function sendRequest($url, $method = 'GET', $data = null, $force = false)
+    {
+        $content = parent::sendRequest($url, $method, $data, $force);
+
+        //reset useragent and language when doing bulk requests
+        if($this->doBulkRequests && !$force) {
+            $this->setUserAgent($this->requestUserAgent);
+            $this->setBrowserLanguage($this->requestLanguage);
+        }
+
+        return $content;
     }
 }
