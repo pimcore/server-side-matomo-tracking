@@ -36,7 +36,7 @@ class TrackingFacade implements TrackingFacadeInterface
     /**
      * @var Tracker[]
      */
-    protected $allTrackers;
+    protected $allTrackers = [];
 
     /**
      * @var mixed
