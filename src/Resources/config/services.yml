@@ -12,6 +12,10 @@ services:
     Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking\TrackingFacadeInterface:
         class: Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking\TrackingFacade
 
+    Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking\TemplatingHelper:
+        tags:
+        - { name: templating.helper, alias: matomoServersideTracker }
+
     Pimcore\Bundle\ServerSideMatomoTrackingBundle\EventListener\TrackingListener:
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onTerminate }

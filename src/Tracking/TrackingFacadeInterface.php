@@ -24,6 +24,9 @@ namespace Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking;
 
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @method TrackingFacadeInterface doTrackContentImpressionForAllTrackers($contentName, $contentPiece = 'Unknown', $contentTarget = false): TrackingFacadeInterface
+ */
 interface TrackingFacadeInterface
 {
     /**

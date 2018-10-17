@@ -18,6 +18,9 @@ namespace Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking;
 use Pimcore\Http\Request\Resolver\SiteResolver;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @method TrackingFacadeInterface doTrackContentImpressionForAllTrackers($contentName, $contentPiece = 'Unknown', $contentTarget = false): TrackingFacadeInterface
+ */
 class TrackingFacade implements TrackingFacadeInterface
 {
     /**
@@ -100,6 +103,19 @@ class TrackingFacade implements TrackingFacadeInterface
         $pathPath = $request->getPathInfo();
         foreach ($this->getCurrentTrackers() as $tracker) {
             $tracker->doTrackPageView($pathPath);
+        }
+
+        return $this;
+    }
+
+    public function __call($name, $arguments)
+    {
+        $methodName = str_replace("ForAllTrackers", "", $name);
+
+        foreach ($this->getCurrentTrackers() as $tracker) {
+            if (method_exists($tracker, $methodName)) {
+                call_user_func_array([$tracker, $methodName], $arguments);
+            }
         }
 
         return $this;
