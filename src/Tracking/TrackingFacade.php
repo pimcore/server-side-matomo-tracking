@@ -108,6 +108,24 @@ class TrackingFacade implements TrackingFacadeInterface
         return $this;
     }
 
+    /**
+     * @param int $id
+     * @param string $name
+     * @param string $value
+     * @param string $scope
+     * @return TrackingFacadeInterface
+     * @throws \Exception
+     */
+    public function doSetCustomVariableForAllTrackers(int $id, string $name, string $value, string $scope = 'visit'): TrackingFacadeInterface
+    {
+        foreach ($this->getCurrentTrackers() as $tracker) {
+            $tracker->setCustomVariable($id, $name, $value, $scope = 'visit');
+        }
+
+        return $this;
+    }
+
+
     public function __call($name, $arguments)
     {
         $methodName = str_replace("ForAllTrackers", "", $name);

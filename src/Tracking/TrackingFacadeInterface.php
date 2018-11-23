@@ -61,4 +61,13 @@ interface TrackingFacadeInterface
      * @return TrackingFacadeInterface
      */
     public function addTracker(Tracker $tracker): TrackingFacadeInterface;
+
+    /**
+     * @param int $id
+     * @param string $name
+     * @param string $value
+     * @param string $scope
+     * @return TrackingFacadeInterface
+     */
+    public function doSetCustomVariableForAllTrackers(int $id, string $name, string $value, string $scope = 'visit'): TrackingFacadeInterface;
 }
