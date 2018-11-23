@@ -70,4 +70,10 @@ interface TrackingFacadeInterface
      * @return TrackingFacadeInterface
      */
     public function doSetCustomVariableForAllTrackers(int $id, string $name, string $value, string $scope = 'visit'): TrackingFacadeInterface;
+
+    /**
+     * @param string $userId
+     * @return TrackingFacadeInterface
+     */
+    public function doSetUserIdForAllTrackers(string $userId): TrackingFacadeInterface;
 }

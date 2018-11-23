@@ -125,6 +125,21 @@ class TrackingFacade implements TrackingFacadeInterface
         return $this;
     }
 
+    /**
+     * @param string $userId
+     * @return TrackingFacadeInterface
+     * @throws \Exception
+     */
+    public function doSetUserIdForAllTrackers(string $userId): TrackingFacadeInterface
+    {
+        foreach ($this->getCurrentTrackers() as $tracker) {
+            $tracker->setUserId($userId);
+        }
+
+
+        return $this;
+    }
+
 
     public function __call($name, $arguments)
     {
