@@ -22,7 +22,7 @@ use Pimcore\Http\Request\Resolver\EditmodeResolver;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
 use Pimcore\Http\RequestHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
@@ -119,7 +119,7 @@ class TrackingListener
         $this->trackingFacade->doBulkTrackForAllTrackers();
     }
 
-    public function onRequest(GetResponseEvent $event)
+    public function onResponse(FilterResponseEvent $event)
     {
         if (!$this->checkIfApplicable($event)) {
             return;
