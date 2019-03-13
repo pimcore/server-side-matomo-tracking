@@ -111,7 +111,7 @@ class ServerSideMatomoTracker implements
 
         $this->tracker->setEcommerceView(
             $item->getId(),
-            $item->getName(),
+            trim($item->getName() . ' ' . $item->getVariant()),
             $this->filterCategories($item->getCategories()),
             $item->getPrice()
         );
@@ -194,7 +194,7 @@ class ServerSideMatomoTracker implements
         foreach ($items as $item) {
             $this->tracker->addEcommerceItem(
                 $item->getId(),
-                $item->getName(),
+                trim($item->getName() . ' ' . $item->getVariant()),
                 $item->getCategories(),
                 $item->getPrice(),
                 $item->getQuantity()
