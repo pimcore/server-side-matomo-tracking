@@ -16,6 +16,7 @@
 namespace Pimcore\Bundle\ServerSideMatomoTrackingBundle\EventListener;
 
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
+use Pimcore\Bundle\CoreBundle\EventListener\Traits\EnabledTrait;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\ResponseInjectionTrait;
 use Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking\TrackingFacadeInterface;
 use Pimcore\Http\Request\Resolver\EditmodeResolver;
@@ -28,6 +29,7 @@ use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 
 class TrackingListener
 {
+    use EnabledTrait;
     use PimcoreContextAwareTrait;
     use ResponseInjectionTrait;
 
