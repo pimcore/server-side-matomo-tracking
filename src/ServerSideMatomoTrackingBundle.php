@@ -17,10 +17,18 @@ namespace Pimcore\Bundle\ServerSideMatomoTrackingBundle;
 
 use Pimcore\Bundle\ServerSideMatomoTrackingBundle\DependencyInjection\Compiler\TrackerRegistrationCompilerPass;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
+use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ServerSideMatomoTrackingBundle extends AbstractPimcoreBundle
 {
+    use PackageVersionTrait;
+
+    protected function getComposerPackageName()
+    {
+        return 'pimcore/server-side-matomo-tracking';
+    }
+
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new TrackerRegistrationCompilerPass());
