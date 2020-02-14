@@ -3,7 +3,7 @@
   "license": "GPL-3.0-or-later",
   "type": "pimcore-bundle",
   "require": {
-    "pimcore/pimcore": ">=5.4 <6.5",
+    "pimcore/pimcore": ">=5.4 <6.6",
     "piwik/piwik-php-tracker": "~1.4.0"
   },
   "autoload": {
