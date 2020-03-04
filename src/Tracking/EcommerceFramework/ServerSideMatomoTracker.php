@@ -25,7 +25,7 @@ use Pimcore\Bundle\EcommerceFrameworkBundle\Tracking\ICategoryPageView;
 use Pimcore\Bundle\EcommerceFrameworkBundle\Tracking\ICheckoutComplete;
 use Pimcore\Bundle\EcommerceFrameworkBundle\Tracking\IProductView;
 use Pimcore\Bundle\EcommerceFrameworkBundle\Tracking\ITracker;
-use Pimcore\Bundle\EcommerceFrameworkBundle\Tracking\ITrackingItemBuilder;
+use Pimcore\Bundle\EcommerceFrameworkBundle\Tracking\TrackingItemBuilderInterface;
 use Pimcore\Bundle\EcommerceFrameworkBundle\Tracking\ProductAction;
 use Pimcore\Bundle\ServerSideMatomoTrackingBundle\Tracking\Tracker;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -69,7 +69,7 @@ class ServerSideMatomoTracker implements
      */
     protected $checkoutTenants;
 
-    public function __construct(Tracker $tracker, ITrackingItemBuilder $trackingItemBuilder, array $options = [], $assortmentTenants = [], $checkoutTenants = [])
+    public function __construct(Tracker $tracker, TrackingItemBuilderInterface $trackingItemBuilder, array $options = [], $assortmentTenants = [], $checkoutTenants = [])
     {
         $this->tracker = $tracker;
         $this->trackingItemBuilder = $trackingItemBuilder;
